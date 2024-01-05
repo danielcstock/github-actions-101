@@ -1,18 +1,8 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
-WORKDIR /app
+﻿FROM mcr.microsoft.com/mssql/server:2017-latest
+ENV MSSQL_SA_PASSWORD=myPassword
+ENV ACCEPT_EULA=Y
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["github-actions-101/github-actions-101.csproj", "github-actions-101/"]
-RUN dotnet restore "github-actions-101/github-actions-101.csproj"
-COPY . .
-WORKDIR "/src/github-actions-101"
-RUN dotnet build "github-actions-101.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "github-actions-101.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "github-actions-101.dll"]
+COPY ./db.bak /var/opt/mssql/backup/db.bak
+# COPY restore.sql restore.sql
+# RUN (/opt/mssql/bin/sqlservr --accept-eula & ) | grep -q "Starting database restore" && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'myPassword' -d master -i restore.sql
+# RUN   docker exec -it mssql-server /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "myPassword" -Q "RESTORE DATABASE Database1 FROM DISK = '/var/opt/mssql/backup/db.bak' WITH MOVE 'Database1_Data' TO '/var/opt/mssql/data/db.mdf', MOVE 'Database1_Log' TO '/var/opt/mssql/data/db.ldf'"
