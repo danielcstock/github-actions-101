@@ -20,9 +20,9 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
-#    - name: Restore dependencies
-#      run: dotnet restore
-#    - name: Build
-#      run: dotnet build --no-restore
+    - name: Restore dependencies
+      run: dotnet restore github-actions-101/github-actions-101
+    - name: Build
+      run: dotnet build github-actions-101/github-actions-101 --no-restore
     - name: Test
       run: dotnet test github-actions-101/github-actions-101 --no-build --verbosity normal
