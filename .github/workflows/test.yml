@@ -21,5 +21,7 @@ jobs:
       run: dotnet restore github-actions-101/github-actions-101
     - name: Build
       run: dotnet build github-actions-101/github-actions-101
+    - name: Test
+      run: dotnet test github-actions-101/github-actions-101 --no-build --verbosity normal
     
     
